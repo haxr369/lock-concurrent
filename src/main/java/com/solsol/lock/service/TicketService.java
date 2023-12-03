@@ -1,20 +1,24 @@
 package com.solsol.lock.service;
 
 import com.solsol.lock.domain.Ticket;
+import com.solsol.lock.domain.TicketStatus;
 import com.solsol.lock.domain.dto.TicketDto;
 import com.solsol.lock.repository.TicketRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class TicketService {
 
     private final TicketRepository ticketRepository;
 
-    @Transactional(isolation = Isolation.DEFAULT)
     public Long subtract(String ticketName){
         Ticket ticket = ticketRepository.findByTicketName(ticketName);
         ticket.subtractQuantity();
@@ -26,7 +30,25 @@ public class TicketService {
         return new TicketDto(target);
     }
 
-    public void saveTicket(Ticket ticket){
-        ticketRepository.save(ticket);
+    public Ticket findByTicketName(String name){
+        return ticketRepository.findByTicketName(name);
+    }
+
+    public List<TicketDto> findByTicketStatus(TicketStatus status){
+        List<Ticket> targets = ticketRepository.findByStatus(status);
+        return targets.stream()
+                .map(TicketDto::new)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void updateStatus(Long id, TicketStatus status){
+        Ticket ticket = ticketRepository.findByTicketId(id);
+        log.info("update ticket id : "+ticket.getTicketId());
+        ticket.setStatus(status);
+    }
+
+    public Ticket saveTicket(Ticket ticket){
+        return ticketRepository.save(ticket);
     }
 }

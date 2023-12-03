@@ -6,3 +6,9 @@
 
 ---
 
+### 실험 준비
+
+1. docker demon 실행
+2. `docker-compose up -d` 로 DB 만들기
+3.  원하는 실험 상황 실행시키기
+

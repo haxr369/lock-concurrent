@@ -32,6 +32,10 @@ public class Ticket {
         this.quantity=quantity;
     }
 
+    public void setStatus(TicketStatus status){
+        this.status = status;
+    }
+
     public void subtractQuantity() {
         if(this.quantity >= 1){
             this.quantity = this.quantity-1;
