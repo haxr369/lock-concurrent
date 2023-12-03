@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootApplication
 @Slf4j
@@ -22,7 +24,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class NonRepeatableRead {
 
 	private final TicketService ticketService;
-	private final UserService userService;
+	private final ReadCloseTickets readCloseTickets;
+	private final UpdateTicketStatus updateTicketStatus;
+
 	public static void main(String[] args) {
 		SpringApplication.run(NonRepeatableRead.class, args);
 	}
@@ -50,12 +54,11 @@ public class NonRepeatableRead {
 		Ticket ticketB = new Ticket("B좌석", 5L);
 		Ticket savedTicketB = ticketService.saveTicket(ticketB);
 
-		Runnable readCloseTickets = new ReadCloseTickets(ticketService);
 		Thread read = new Thread(readCloseTickets);
-		Runnable updateTicketStatus = new UpdateTicketStatus(ticketService);
 		Thread update = new Thread(updateTicketStatus);
 
 		read.start();
 		update.start();
+
 	}
 }
