@@ -30,35 +30,17 @@ public class NonRepeatableRead {
 	public static void main(String[] args) {
 		SpringApplication.run(NonRepeatableRead.class, args);
 	}
-//	@PostConstruct // 빈이 생성되고 자동 실행
-//	public void nonRepeatableRead() {
-//		// 원하는 동작을 여기에 구현
-//		User user = new User("고객1");
-//		userService.saveUser(user);
-//		Ticket ticketA = new Ticket("A좌석", 5L);
-//		ticketService.saveTicket(ticketA);
-//
-//		Runnable ticketRead = new TicketRead(ticketService);
-//		Thread read = new Thread(ticketRead);
-//		Runnable ticketSubtract = new TicketSubtract(ticketService);
-//		Thread subtract = new Thread(ticketSubtract);
-//		read.start(); // 두번 읽기
-//		subtract.start(); // 티켓 수량 바꾸기
-//	}
-
-	@PostConstruct
-	public void phantomRead(){
+	@PostConstruct // 빈이 생성되고 자동 실행
+	public void nonRepeatableRead() {
+		// 원하는 동작을 여기에 구현
 		Ticket ticketA = new Ticket("A좌석", 5L);
-		Ticket savedTicketA = ticketService.saveTicket(ticketA);
-		ticketService.updateStatus(savedTicketA.getTicketId(), TicketStatus.CLOSE);
-		Ticket ticketB = new Ticket("B좌석", 5L);
-		Ticket savedTicketB = ticketService.saveTicket(ticketB);
+		ticketService.saveTicket(ticketA);
 
-		Thread read = new Thread(readCloseTickets);
-		Thread update = new Thread(updateTicketStatus);
-
-		read.start();
-		update.start();
-
+		Runnable ticketRead = new TicketRead(ticketService);
+		Thread read = new Thread(ticketRead);
+		Runnable ticketSubtract = new TicketSubtract(ticketService);
+		Thread subtract = new Thread(ticketSubtract);
+		read.start(); // 두번 읽기
+		subtract.start(); // 티켓 수량 바꾸기
 	}
 }
