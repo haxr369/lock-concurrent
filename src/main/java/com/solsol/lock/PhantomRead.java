@@ -11,9 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
 @Slf4j
 @RequiredArgsConstructor
+//@SpringBootApplication
 public class PhantomRead {
 
 	private final TicketService ticketService;
@@ -21,7 +21,7 @@ public class PhantomRead {
 	private final UpdateTicketStatus updateTicketStatus;
 
 	public static void main(String[] args) {
-		SpringApplication.run(PhantomRead.class, args);
+//		SpringApplication.run(PhantomRead.class, args);
 	}
 
 	@PostConstruct

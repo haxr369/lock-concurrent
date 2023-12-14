@@ -31,7 +31,6 @@ public class Ticket {
         this.ticketName = name;
         this.quantity=quantity;
     }
-
     public void setStatus(TicketStatus status){
         this.status = status;
     }

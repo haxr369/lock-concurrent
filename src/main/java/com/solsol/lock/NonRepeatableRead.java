@@ -18,7 +18,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootApplication
 @Slf4j
 @RequiredArgsConstructor
 public class NonRepeatableRead {
@@ -28,7 +27,7 @@ public class NonRepeatableRead {
 	private final UpdateTicketStatus updateTicketStatus;
 
 	public static void main(String[] args) {
-		SpringApplication.run(NonRepeatableRead.class, args);
+
 	}
 	@PostConstruct // 빈이 생성되고 자동 실행
 	public void nonRepeatableRead() {
