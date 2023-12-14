@@ -45,30 +45,36 @@ public class TestRepository {
         System.out.println(stopWatch.prettyPrint());
     }
 
-//    @Test
-//    @DisplayName("멀티스레드로 티켓 수량 감소 후 수량 체크")
-//    public void givenMultiThreadAndNewTicket_whenUpdated_thenFail() throws InterruptedException {
-//        StopWatch stopWatch = new StopWatch(); // 스톱워치 객체 생성
-//        stopWatch.start(); // 스톱워치 시작
-//        int threadCount = 20; // 멀티 스레드 생성
-//        int requestCount = 100;
-//        ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
-//        // 스레드는 countDown을 호출해서 requestCount를 하나씩 감소시킴
-//        CountDownLatch countDownLatch = new CountDownLatch(requestCount);
-//
-//        for (int i = 0; i < requestCount; i++) {
-//            executorService.submit(() -> { // submit 안에 함수는 스레드가 실행시킴
-//                try {
-//
-//                } finally {
-//                    countDownLatch.countDown();
-//                } });
-//        }
-//
-//        // 메인 스레드는 requestCount가 0이 될때까지 blocked된다.
-//        countDownLatch.await();
-//        stopWatch.stop(); // 스톱워치 스탑
-//        System.out.println(stopWatch.prettyPrint());
-////        assertEquals();
-//    }
+    @Test
+    @DisplayName("멀티스레드로 티켓 수량 감소 후 수량 체크")
+    public void givenMultiThreadAndNewTicket_whenUpdated_thenFail() throws InterruptedException {
+        StopWatch stopWatch = new StopWatch(); // 스톱워치 객체 생성
+        stopWatch.start(); // 스톱워치 시작
+        int threadCount = 20; // 멀티 스레드 생성
+        int requestCount = 100;
+        ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
+        // 스레드는 countDown을 호출해서 requestCount를 하나씩 감소시킴
+        CountDownLatch countDownLatch = new CountDownLatch(requestCount);
+
+        Ticket newTiket = new Ticket("효랑이", (long) requestCount);
+        testEntityManager.persist(newTiket);
+
+        for (int i = 0; i < requestCount; i++) {
+            executorService.submit(() -> { // submit 안에 함수는 스레드가 실행시킴
+                try {
+                    newTiket.subtractQuantity(); // 티켓 수량 감소
+                } finally {
+                    countDownLatch.countDown();
+                } });
+        }
+        ticketRepository.save(newTiket);
+        Long result = testEntityManager.find(Ticket.class, newTiket.getTicketId()).getQuantity();
+
+        System.out.println("티켓 수량 : "+result);
+        // 메인 스레드는 requestCount가 0이 될때까지 blocked된다.
+        countDownLatch.await();
+        stopWatch.stop(); // 스톱워치 스탑
+        System.out.println(stopWatch.prettyPrint());
+        assertEquals(0L, result);
+    }
 }
