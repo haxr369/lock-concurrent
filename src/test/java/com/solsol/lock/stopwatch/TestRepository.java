@@ -2,6 +2,7 @@ package com.solsol.lock.stopwatch;
 
 import com.solsol.lock.domain.Ticket;
 import com.solsol.lock.repository.TicketRepository;
+import com.solsol.lock.service.TicketService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,8 @@ public class TestRepository {
     TicketRepository ticketRepository;
     @Autowired
     TestEntityManager testEntityManager;
+    @Autowired
+    TicketService ticketService;
 
 
     @Test
