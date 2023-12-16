@@ -65,7 +65,7 @@ public class TestService {
     }
 
     @Test
-    @Transactional
+//    @Transactional
     @DisplayName("멀티스레드로 transaction이 걸린 티켓에 수량 감소 후 체크")
     public void givenMultiThreadAndTransaction_whenUpdated_thenSuccess() throws InterruptedException {
         StopWatch stopWatch = new StopWatch(); // 스톱워치 객체 생성

@@ -25,7 +25,7 @@ public class TicketService {
     private final TicketRepository ticketRepository;
 
 
-    @Transactional //(isolation = Isolation.SERIALIZABLE) //왜 Select하고 update를 못할까? -> 다른 스레드에서 가지고 있기 때문!!
+    @Transactional(isolation = Isolation.SERIALIZABLE) // deadlock 발생으로 update하지 못하는 상황 발생!
     public Long subtract(String ticketName){
         try{
             Optional<Ticket> ticket = ticketRepository.findByTicketName(ticketName);
