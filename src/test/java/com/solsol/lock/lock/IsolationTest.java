@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
  */
 @SpringBootTest
-public class IsolationLevelTest {
+public class IsolationTest {
 
     @Autowired
     TicketRepository ticketRepository;
