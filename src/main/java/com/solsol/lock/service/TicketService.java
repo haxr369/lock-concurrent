@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -24,11 +25,21 @@ public class TicketService {
 
     private final TicketRepository ticketRepository;
 
+    /**
+     *
+     * 격리 수준을 Repeatable Read로 설정해도 서로 다른 transaction이 한 데이터를 동시에 update하게된다.
+     * 이 문제는 한 transaction 쓰기 작업을 할 때 다른 transaction이 기다리지 않는 것을 의미한다. -> read-write lock 수행 X
+     *
+     * Repeatable Read는 commit된 데이터만 읽는 것으로 아는데 왜 그럴까? -> Repeatable Read의 구현 방식인 MVCC의 문제
+     *
+     *
+     *
+     */
 
-    @Transactional(isolation = Isolation.SERIALIZABLE) // deadlock 발생으로 update하지 못하는 상황 발생!
+    @Transactional  //(isolation = Isolation.SERIALIZABLE) // deadlock 발생으로 update하지 못하는 상황 발생!
     public Long subtract(String ticketName){
-        try{
-            Optional<Ticket> ticket = ticketRepository.findByTicketName(ticketName);
+        try{ // try 제거해도 ok
+            Optional<Ticket> ticket = ticketRepository.findByTicketNameTest(ticketName);
             if(ticket.isEmpty()){
                 throw new RuntimeException("It's a non-existent ticket.");
             }
@@ -42,12 +53,14 @@ public class TicketService {
     }
 
     public TicketDto readTicket(String ticketName){
-        Ticket target = ticketRepository.findByTicketName(ticketName).get();
+        Ticket target = ticketRepository.findByTicketNameTest(ticketName).get();
         return new TicketDto(target);
     }
 
+    @Transactional
     public Ticket findByTicketName(String name){
-        Optional<Ticket> ticket = ticketRepository.findByTicketName(name);
+        Optional<Ticket> ticket = ticketRepository.findByTicketNameTest(name);
+        log.info("ticket info "+ ticket);
         if(ticket.isEmpty()){
             throw new RuntimeException("It's a non-existent ticket.");
         }

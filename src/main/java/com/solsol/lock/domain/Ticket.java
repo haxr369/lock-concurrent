@@ -3,13 +3,13 @@ package com.solsol.lock.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Synchronized;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "ticket")
 @NoArgsConstructor
 @Getter
 public class Ticket {
@@ -35,8 +35,11 @@ public class Ticket {
         this.status = status;
     }
 
-    public void subtractQuantity() {
+
+    public void subtractQuantity() { //syncro..
         if(this.quantity >= 1){
+            // 스레드가 동시에 올 수 있으니
+            //
             this.quantity = this.quantity-1;
         } else{
             throw new RuntimeException("티켓 수량이 부족합니다.");
