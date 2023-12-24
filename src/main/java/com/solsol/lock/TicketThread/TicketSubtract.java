@@ -14,6 +14,6 @@ public class TicketSubtract implements Runnable {
 
     @Override
     public void run() {
-        ticketService.subtract("A좌석");
+        ticketService.subtractDefault("A좌석");
     }
 }

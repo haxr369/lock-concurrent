@@ -25,6 +25,6 @@ public class TicketController {
     @PatchMapping("/test/quntity/{ticketName}")
     public Long subtractQuntity(@PathVariable(value = "ticketName") String ticketName){
         log.info("ticket name : "+ticketName);
-        return ticketService.subtract(ticketName);
+        return ticketService.subtractDefault(ticketName);
     }
 }
